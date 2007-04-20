@@ -10,11 +10,11 @@ Name:		%name
 Version:	%version
 Release:	%release
 Summary:	A fast webserver with minimal memory-footprint
-Source0:	http://jan.kneschke.de/projects/lighttpd/download/%{name}-%{version}.tar.bz2
+Source0:	http://lighttpd.net/download/%{name}-%{version}.tar.bz2
 Source1:	lighttpd.init
 License:	BSD
 Group:		System/Servers
-URL:		http://jan.kneschke.de/projects/lighttpd/
+URL:		http://lighttpd.net/
 BuildRequires:	zlib-devel fam-devel mysql-devel memcache-devel lua-devel
 BuildRequires:	openssl-devel gdbm-devel bzip2-devel pcre-devel openldap-devel
 BuildRequires:	attr-devel libxml2-devel sqlite3-devel
