@@ -24,7 +24,6 @@ Requires(preun):rpm-helper
 Obsoletes:	%name-modules
 Provides:	%name-modules
 Provides:	webserver
-BuildRoot:	%{_tmppath}/%{name}-root
 
 %description
 Security, speed, compliance, and flexibility--all of these describe LightTPD
