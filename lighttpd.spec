@@ -116,7 +116,8 @@ Group:          System/Servers
 Requires:	%{name}
 
 %description mod_webdav
-The WebDAV module for %{name} is a very minimalistic implementation of RFC 2518.
+The WebDAV module for %{name} is a very minimalistic implementation of RFC
+2518.
 
 %package mod_magnet
 Summary:	Module to control the request handling in %{name}
@@ -126,11 +127,14 @@ Requires:	%{name}
 %description mod_magnet
 mod_magnet can attract a request in several stages in the request-handling.
 
-* either at the same level as mod_rewrite, before any parsing of the URL is done
-* or at a later stage, when the doc-root is known and the physical-path is already setup
+* either at the same level as mod_rewrite, before any parsing of the URL is
+  done
+* or at a later stage, when the doc-root is known and the physical-path is
+  already setup
 
-Keep in mind that the magnet is executed in the core of lighty. EVERY long-running operation is blocking
-ALL connections in the server. You are warned. For time-consuming or blocking scripts use mod_fastcgi and friends.
+Keep in mind that the magnet is executed in the core of lighty. EVERY long-
+running operation is blocking ALL connections in the server. You are warned.
+For time-consuming or blocking scripts use mod_fastcgi and friends.
 
 %prep
 %setup -q
