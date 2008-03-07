@@ -1,6 +1,6 @@
 %define	name	lighttpd
 %define	version	1.4.18
-%define	release	%mkrel 1
+%define	release	%mkrel 2
 
 # Following modules bring no additionnal dependencies
 # Other ones go into separate packages
@@ -170,6 +170,9 @@ sed -i 's£^server.document-root.*$£server.document-root = "%{_var}/www/html"£' %
 sed -i 's£^server.errorlog.*$£server.errorlog = "%{_logdir}/lighttpd/error.log"£' %{buildroot}%{_sysconfdir}/lighttpd/lighttpd.conf
 sed -i 's£^accesslog.filename.*$£accesslog.filename = "%{_logdir}/lighttpd/access.log"£' %{buildroot}%{_sysconfdir}/lighttpd/lighttpd.conf
 
+sed -i 's£.*server.username[\t ]*= .*$£server.username = "apache"£' %{buildroot}%{_sysconfdir}/lighttpd/lighttpd.conf
+sed -i 's£.*server.groupname[\t ]*= .*$£server.groupname = "apache"£' %{buildroot}%{_sysconfdir}/lighttpd/lighttpd.conf
+
 mkdir -p %{buildroot}%{_logdir}/lighttpd
 
 mkdir -p %{buildroot}%{_var}/www/html
@@ -213,6 +216,15 @@ mkdir -p %buildroot%{_var}/www/html
 rm -rf %buildroot
 
 %post
+# Fix rights on logs after upgrade, else the server can not start
+if [ $1 -gt 1 ]; then
+	if grep '^server.username = "apache"' %{_sysconfdir}/lighttpd/lighttpd.conf >/dev/null; then
+		if [ `stat -c %U /var/log/lighttpd/` != "apache" ]; then
+			chown -R apache /var/log/lighttpd/
+		fi
+	fi
+fi
+
 %_post_service lighttpd
 
 %preun
@@ -226,7 +238,7 @@ rm -rf %buildroot
 %dir %{_sysconfdir}/lighttpd/
 %config(noreplace) %{_sysconfdir}/lighttpd/*
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name} 
-%{_logdir}/lighttpd
+%attr(0755,apache,apache) %{_logdir}/lighttpd
 %{_mandir}/*/*
 %{_sbindir}/*
 %{_bindir}/*
