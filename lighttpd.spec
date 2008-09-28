@@ -1,6 +1,6 @@
 %define	name	lighttpd
 %define	version	1.4.19
-%define	release	%mkrel 3
+%define	release	%mkrel 4
 
 # Following modules bring no additionnal dependencies
 # Other ones go into separate packages
@@ -12,6 +12,17 @@ Release:	%release
 Summary:	A fast webserver with minimal memory-footprint
 Source0:	http://lighttpd.net/download/%{name}-%{version}.tar.bz2
 Source1:	lighttpd.init
+# patches 0 - 7 from Debian
+Patch0:		fastcgi_detach.patch
+Patch1:		ldap_leak_bugfix.patch
+Patch2:		ldap_build_filter_fix.patch
+Patch3:		ldap-deprecated.patch
+# CVE-2008-1531
+Patch4:		ssl-connection-errors.patch
+# lighttpd security patches 2008-05 to 2008-07
+Patch5:		lighttpd-1.4.x_request_header_memleak.patch
+Patch6:		lighttpd-1.4.x_userdir_lowercase.patch
+Patch7:		lighttpd-1.4.x_rewrite_redirect_decode_url.patch 
 License:	BSD
 Group:		System/Servers
 URL:		http://lighttpd.net/
@@ -138,6 +149,14 @@ For time-consuming or blocking scripts use mod_fastcgi and friends.
 
 %prep
 %setup -q
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p0
+%patch6 -p0
+%patch7 -p0
 
 %build
 %configure2_5x --libdir=%{_libdir}/%{name}/ \
