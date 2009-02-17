@@ -1,6 +1,6 @@
 %define	name	lighttpd
-%define	version	1.4.19
-%define	release	%mkrel 5
+%define	version	1.4.21
+%define	release	%mkrel 1
 
 # Following modules bring no additionnal dependencies
 # Other ones go into separate packages
@@ -12,17 +12,6 @@ Release:	%release
 Summary:	A fast webserver with minimal memory-footprint
 Source0:	http://lighttpd.net/download/%{name}-%{version}.tar.bz2
 Source1:	lighttpd.init
-# patches 0 - 7 from Debian
-Patch0:		fastcgi_detach.patch
-Patch1:		ldap_leak_bugfix.patch
-Patch2:		ldap_build_filter_fix.patch
-Patch3:		ldap-deprecated.patch
-# CVE-2008-1531
-Patch4:		ssl-connection-errors.patch
-# lighttpd security patches 2008-05 to 2008-07
-Patch5:		lighttpd-1.4.x_request_header_memleak.patch
-Patch6:		lighttpd-1.4.x_userdir_lowercase.patch
-Patch7:		lighttpd-1.4.x_rewrite_redirect_decode_url.patch 
 License:	BSD
 Group:		System/Servers
 URL:		http://lighttpd.net/
@@ -149,14 +138,6 @@ For time-consuming or blocking scripts use mod_fastcgi and friends.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p0
-%patch6 -p0
-%patch7 -p0
 
 %build
 %configure2_5x --libdir=%{_libdir}/%{name}/ \
@@ -251,12 +232,12 @@ fi
 
 %files -f base.list
 %defattr(-,root,root)
-%doc doc/lighttpd.conf doc/lighttpd.user README INSTALL ChangeLog COPYING AUTHORS 
+%doc doc/lighttpd.conf doc/lighttpd.user README INSTALL ChangeLog COPYING AUTHORS
 %attr(0755,root,root) %{_sysconfdir}/init.d/lighttpd
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/sysconfig/lighttpd
 %dir %{_sysconfdir}/lighttpd/
 %config(noreplace) %{_sysconfdir}/lighttpd/*
-%config(noreplace) %{_sysconfdir}/logrotate.d/%{name} 
+%config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %attr(0755,apache,apache) %{_logdir}/lighttpd
 %{_mandir}/*/*
 %{_sbindir}/*
