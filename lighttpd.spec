@@ -1,6 +1,6 @@
 %define	name	lighttpd
 %define	version	1.4.22
-%define	release	%mkrel 1
+%define	release	%mkrel 2
 
 # Following modules bring no additionnal dependencies
 # Other ones go into separate packages
@@ -180,13 +180,13 @@ mkdir -p %{buildroot}%{_var}/www/html
 mkdir -p %{buildroot}%{_sysconfdir}/logrotate.d
 cat > %{buildroot}%{_sysconfdir}/logrotate.d/%{name} <<EOF
 %{_logdir}/%{name}/*.log {
-    size=200M
+    size=20M
     rotate 5
     weekly
     missingok
     notifempty
     postrotate
-        service %{name} restart
+        service %{name} reload
     endscript
 }
 EOF
