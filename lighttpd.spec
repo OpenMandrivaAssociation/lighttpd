@@ -1,6 +1,6 @@
 %define	name	lighttpd
-%define	version	1.4.22
-%define	release	%mkrel 2
+%define	version	1.4.23
+%define	release	%mkrel 1
 
 # Following modules bring no additionnal dependencies
 # Other ones go into separate packages
