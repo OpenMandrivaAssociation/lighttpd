@@ -241,7 +241,6 @@ fi
 %attr(0755,apache,apache) %{_logdir}/lighttpd
 %{_mandir}/*/*
 %{_sbindir}/*
-%{_bindir}/*
 %attr(0755,apache,apache) %dir %{_var}/www
 %attr(0755,root,root) %dir %{_var}/www/html
 
