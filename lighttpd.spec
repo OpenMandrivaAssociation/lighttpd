@@ -1,5 +1,5 @@
 %define	name	lighttpd
-%define	version	1.4.23
+%define	version	1.4.24
 %define	release	%mkrel 1
 
 # Following modules bring no additionnal dependencies
@@ -232,7 +232,7 @@ fi
 
 %files -f base.list
 %defattr(-,root,root)
-%doc doc/lighttpd.conf doc/lighttpd.user README INSTALL ChangeLog COPYING AUTHORS
+%doc doc/lighttpd.conf doc/lighttpd.user README INSTALL NEWS COPYING AUTHORS
 %attr(0755,root,root) %{_sysconfdir}/init.d/lighttpd
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/sysconfig/lighttpd
 %dir %{_sysconfdir}/lighttpd/
