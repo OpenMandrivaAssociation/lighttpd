@@ -1,6 +1,6 @@
 %define	name	lighttpd
 %define	version	1.4.25
-%define	release	%mkrel 1
+%define	release	%mkrel 2
 
 # Following modules bring no additionnal dependencies
 # Other ones go into separate packages
@@ -19,6 +19,10 @@ BuildRequires:	zlib-devel fam-devel mysql-devel memcache-devel lua-devel
 BuildRequires:	openssl-devel gdbm-devel bzip2-devel pcre-devel openldap-devel
 BuildRequires:	attr-devel libxml2-devel sqlite3-devel
 BuildRequires:	autoconf2.5
+# For /var/www/html, we should split it
+Requires(pre):	apache-conf
+Requires:	apache-conf
+Requires(post):	apache-conf
 Requires(post):	rpm-helper
 Requires(preun):rpm-helper
 Obsoletes:	%name-modules
