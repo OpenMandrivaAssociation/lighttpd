@@ -1,6 +1,6 @@
 %define	name	lighttpd
 %define	version	1.4.25
-%define	release	%mkrel 2
+%define	release	%mkrel 3
 
 # Following modules bring no additionnal dependencies
 # Other ones go into separate packages
@@ -12,6 +12,8 @@ Release:	%release
 Summary:	A fast webserver with minimal memory-footprint
 Source0:	http://lighttpd.net/download/%{name}-%{version}.tar.bz2
 Source1:	lighttpd.init
+# http://download.lighttpd.net/lighttpd/security/lighttpd_sa_2010_01.txt
+Patch0:		lighttpd-1.4.x_fix_slow_request_dos.patch
 License:	BSD
 Group:		System/Servers
 URL:		http://lighttpd.net/
@@ -142,6 +144,7 @@ For time-consuming or blocking scripts use mod_fastcgi and friends.
 
 %prep
 %setup -q
+%patch0 -p2
 
 %build
 %configure2_5x --libdir=%{_libdir}/%{name}/ \
