@@ -165,10 +165,10 @@ rm -rf %buildroot
 
 mkdir -p %{buildroot}%{_sysconfdir}/{init.d,sysconfig}
 install -m 755 %{SOURCE1} %{buildroot}%{_sysconfdir}/init.d/lighttpd
-install -m 644 doc/sysconfig.lighttpd %{buildroot}%{_sysconfdir}/sysconfig/lighttpd
+install -m 644 doc/initscripts/sysconfig.lighttpd %{buildroot}%{_sysconfdir}/sysconfig/lighttpd
 
 mkdir -p %{buildroot}%{_sysconfdir}/lighttpd
-install -m 644 doc/lighttpd.conf %{buildroot}%{_sysconfdir}/lighttpd
+install -m 644 doc/config/lighttpd.conf %{buildroot}%{_sysconfdir}/lighttpd
 
 sed -i 's£^server.document-root.*$£server.document-root = "%{_var}/www/html"£' %{buildroot}%{_sysconfdir}/lighttpd/lighttpd.conf
 sed -i 's£^server.errorlog.*$£server.errorlog = "%{_logdir}/lighttpd/error.log"£' %{buildroot}%{_sysconfdir}/lighttpd/lighttpd.conf
@@ -236,7 +236,7 @@ fi
 
 %files -f base.list
 %defattr(-,root,root)
-%doc doc/lighttpd.conf doc/lighttpd.user README INSTALL NEWS COPYING AUTHORS
+%doc doc/config/lighttpd.conf README INSTALL NEWS COPYING AUTHORS
 %attr(0755,root,root) %{_sysconfdir}/init.d/lighttpd
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/sysconfig/lighttpd
 %dir %{_sysconfdir}/lighttpd/
