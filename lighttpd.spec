@@ -1,6 +1,6 @@
 %define	name	lighttpd
-%define	version	1.4.26
-%define	release	%mkrel 3
+%define	version	1.4.27
+%define	release	%mkrel 1
 
 # Following modules bring no additionnal dependencies
 # Other ones go into separate packages
@@ -10,9 +10,8 @@ Name:		%name
 Version:	%version
 Release:	%release
 Summary:	A fast webserver with minimal memory-footprint
-Source0:	http://lighttpd.net/download/%{name}-%{version}.tar.bz2
+Source0:	http://download.lighttpd.net/lighttpd/releases-1.4.x/%{name}-%{version}.tar.bz2
 Source1:	lighttpd.init
-Patch0:		lighttpd-1.4.x-Fix-handling-return-value-of-SSL_CTX_set_options.patch
 License:	BSD
 Group:		System/Servers
 URL:		http://lighttpd.net/
@@ -143,7 +142,6 @@ For time-consuming or blocking scripts use mod_fastcgi and friends.
 
 %prep
 %setup -q
-%patch0 -p0
 
 %build
 %configure2_5x --libdir=%{_libdir}/%{name}/ \
