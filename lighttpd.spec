@@ -1,6 +1,6 @@
 %define	name	lighttpd
-%define	version	1.4.28
-%define	release	%mkrel 5
+%define	version	1.4.30
+%define	release	%mkrel i
 
 # Following modules bring no additionnal dependencies
 # Other ones go into separate packages
@@ -10,8 +10,9 @@ Name:		%name
 Version:	%version
 Release:	%release
 Summary:	A fast webserver with minimal memory-footprint
-Source0:	http://download.lighttpd.net/lighttpd/releases-1.4.x/%{name}-%{version}.tar.bz2
+Source0:	http://download.lighttpd.net/lighttpd/releases-1.4.x/%{name}-%{version}.tar.gz
 Source1:	lighttpd.init
+Source2:	http://download.lighttpd.net/lighttpd/releases-1.4.x/%{name}-%{version}.tar.gz.asc
 License:	BSD
 Group:		System/Servers
 URL:		http://lighttpd.net/
@@ -32,7 +33,7 @@ BuildRoot:	%{_tmppath}/%{name}-root
 
 %description
 Security, speed, compliance, and flexibility--all of these describe LightTPD
-which is rapidly redefining efficiency of a webserver; as it is designed and
+which is rapidly redefining efficiency of a web-server; as it is designed and
 optimized for high performance environments. With a small memory
 footprint compared to other web-servers, effective management of the
 cpu-load, and advanced feature set (FastCGI, CGI, Auth,
@@ -198,7 +199,7 @@ EOF
 rm -f %{buildroot}%{_libdir}/%{name}/*.la
 
 echo %{_libdir}/%{name}/{%{base_modules}} | tr ' ' '\n' > base.list
-for i in doc/*.txt
+for i in doc/outdated/*.txt
 do
 	mod=`cat "$i" | tr -d '\\r' | sed -n "s/^Module:.*\\(mod_.*\\)$/\\1/p"`
 	if [ -z "$mod" ]
