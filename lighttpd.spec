@@ -1,6 +1,6 @@
 %define	name	lighttpd
 %define	version	1.4.30
-%define	release	%mkrel i
+%define	release	%mkrel 2
 
 # Following modules bring no additionnal dependencies
 # Other ones go into separate packages
@@ -19,7 +19,7 @@ URL:		http://lighttpd.net/
 BuildRequires:	zlib-devel fam-devel mysql-devel memcache-devel lua-devel
 BuildRequires:	openssl-devel gdbm-devel bzip2-devel pcre-devel openldap-devel
 BuildRequires:	attr-devel libxml2-devel sqlite3-devel
-BuildRequires:	autoconf2.5
+BuildRequires:	autoconf automake libtool
 # For /var/www/html, we should split it
 Requires(pre):	apache-conf
 Requires:	apache-conf
