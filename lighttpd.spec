@@ -1,6 +1,6 @@
 %define	name	lighttpd
-%define	version	1.4.30
-%define	release	%mkrel 2
+%define	version	1.4.31
+%define	release	%mkrel 1
 
 # Following modules bring no additionnal dependencies
 # Other ones go into separate packages
@@ -10,26 +10,25 @@ Name:		%name
 Version:	%version
 Release:	%release
 Summary:	A fast webserver with minimal memory-footprint
-Source0:	http://download.lighttpd.net/lighttpd/releases-1.4.x/%{name}-%{version}.tar.gz
+Source0:	http://download.lighttpd.net/lighttpd/releases-1.4.x/%{name}-%{version}.tar.xz
 Source1:	lighttpd.init
-Source2:	http://download.lighttpd.net/lighttpd/releases-1.4.x/%{name}-%{version}.tar.gz.asc
+Source2:	http://download.lighttpd.net/lighttpd/releases-1.4.x/%{name}-%{version}.tar.xz.asc
 License:	BSD
 Group:		System/Servers
 URL:		http://lighttpd.net/
 BuildRequires:	zlib-devel fam-devel mysql-devel memcache-devel lua-devel
 BuildRequires:	openssl-devel gdbm-devel bzip2-devel pcre-devel openldap-devel
 BuildRequires:	attr-devel libxml2-devel sqlite3-devel
-BuildRequires:	autoconf automake libtool
+#BuildRequires:	autoconf automake libtool
 # For /var/www/html, we should split it
 Requires(pre):	apache-conf
 Requires:	apache-conf
 Requires(post):	apache-conf
 Requires(post):	rpm-helper
 Requires(preun):rpm-helper
-Obsoletes:	%name-modules
-Provides:	%name-modules
+Obsoletes:	%name-modules < %{EVRD}
+Provides:	%name-modules = %{EVRD}
 Provides:	webserver
-BuildRoot:	%{_tmppath}/%{name}-root
 
 %description
 Security, speed, compliance, and flexibility--all of these describe LightTPD
@@ -154,6 +153,7 @@ For time-consuming or blocking scripts use mod_fastcgi and friends.
   --with-bzip2\
   --with-fam\
   --with-webdav-props\
+  --with-webdav-locks\
   --with-gdbm\
   --with-memcache\
   --with-lua
@@ -161,7 +161,6 @@ For time-consuming or blocking scripts use mod_fastcgi and friends.
 %make
 
 %install
-rm -rf %buildroot
 %makeinstall_std
 
 mkdir -p %{buildroot}%{_sysconfdir}/{init.d,sysconfig}
@@ -217,9 +216,6 @@ done
 
 mkdir -p %buildroot%{_var}/www/html
 
-%clean
-rm -rf %buildroot
-
 %post
 # Fix rights on logs after upgrade, else the server can not start
 if [ $1 -gt 1 ]; then
@@ -236,8 +232,7 @@ fi
 %_preun_service lighttpd
 
 %files -f base.list
-%defattr(-,root,root)
-%doc doc/config/lighttpd.conf README INSTALL NEWS COPYING AUTHORS
+%doc doc/config/lighttpd.conf README NEWS COPYING AUTHORS
 %attr(0755,root,root) %{_sysconfdir}/init.d/lighttpd
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/sysconfig/lighttpd
 %dir %{_sysconfdir}/lighttpd/
@@ -250,31 +245,22 @@ fi
 %attr(0755,root,root) %dir %{_var}/www/html
 
 %files mod_auth -f mod_auth
-%defattr(-,root,root)
 %{_libdir}/%{name}/mod_auth.so
 
 %files mod_cml -f mod_cml
-%defattr(-,root,root)
 %{_libdir}/%{name}/mod_cml.so
 
 %files mod_compress -f mod_compress
-%defattr(-,root,root)
 %{_libdir}/%{name}/mod_compress.so
 
 %files mod_mysql_vhost -f mod_mysql_vhost
-%defattr(-,root,root)
 %{_libdir}/%{name}/mod_mysql_vhost.so
 
 %files mod_trigger_b4_dl -f mod_trigger_b4_dl
-%defattr(-,root,root)
 %{_libdir}/%{name}/mod_trigger_b4_dl.so
 
 %files mod_webdav -f mod_webdav
-%defattr(-,root,root)
 %{_libdir}/%{name}/mod_webdav.so
 
 %files mod_magnet -f mod_magnet
-%defattr(-,root,root)
 %{_libdir}/%{name}/mod_magnet.so
-
-
