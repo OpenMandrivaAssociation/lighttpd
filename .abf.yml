@@ -1,4 +1,4 @@
+---
 sources:
-  "lighttpd-1.4.31.tar.xz:"	0a7c69c2803931cf81410bd524840afe3098fdf6
-  "lighttpd-1.4.31.tar.xz.asc:"	17a89174f14f69f9ef52c401e71c0d1589c91813
-  "lighttpd.init:"	b47d2779ca5c912d7733aec8bb2b3fb411c806d4
+  lighttpd-1.4.31.tar.bz2: fadfd4bd25d794536ea646fa376caee6a105368e
+  lighttpd-1.4.32.tar.bz2: 61930d88aa5a5ebb4a4b539099e9577694e61185

@@ -1,38 +1,42 @@
-%define	name	lighttpd
-%define	version	1.4.31
-%define	release	%mkrel 1
-
 # Following modules bring no additionnal dependencies
 # Other ones go into separate packages
 %define base_modules	mod_access.so,mod_accesslog.so,mod_alias.so,mod_cgi.so,mod_dirlisting.so,mod_evhost.so,mod_expire.so,mod_extforward.so,mod_fastcgi.so,mod_flv_streaming.so,mod_indexfile.so,mod_proxy.so,mod_redirect.so,mod_rewrite.so,mod_rrdtool.so,mod_scgi.so,mod_secdownload.so,mod_setenv.so,mod_simple_vhost.so,mod_ssi.so,mod_staticfile.so,mod_status.so,mod_userdir.so,mod_usertrack.so,mod_evasive.so
 
-Name:		%name
-Version:	%version
-Release:	%release
+Name:		lighttpd
+Version:	1.4.32
+Release:	1
 Summary:	A fast webserver with minimal memory-footprint
-Source0:	http://download.lighttpd.net/lighttpd/releases-1.4.x/%{name}-%{version}.tar.xz
-Source1:	lighttpd.init
-Source2:	http://download.lighttpd.net/lighttpd/releases-1.4.x/%{name}-%{version}.tar.xz.asc
 License:	BSD
 Group:		System/Servers
 URL:		http://lighttpd.net/
-BuildRequires:	zlib-devel fam-devel mysql-devel memcache-devel lua-devel
-BuildRequires:	openssl-devel gdbm-devel bzip2-devel pcre-devel openldap-devel
-BuildRequires:	attr-devel libxml2-devel sqlite3-devel
-#BuildRequires:	autoconf automake libtool
-# For /var/www/html, we should split it
-Requires(pre):	apache-conf
-Requires:	apache-conf
-Requires(post):	apache-conf
-Requires(post):	rpm-helper
-Requires(preun):rpm-helper
-Obsoletes:	%name-modules < %{EVRD}
-Provides:	%name-modules = %{EVRD}
+Source0:	http://download.lighttpd.net/lighttpd/releases-1.4.x/%{name}-%{version}.tar.bz2
+Source2:	lighttpd.service
+Source3:	php.d-lighttpd.ini
+Patch1:		lighttpd-defaultroot.patch
+BuildRequires:	pkgconfig(zlib)
+BuildRequires:	fam-devel
+BuildRequires:	mysql-devel
+BuildRequires:	memcache-devel
+BuildRequires:	lua5.1-devel
+BuildRequires:	pkgconfig(openssl)
+BuildRequires:	gdbm-devel
+BuildRequires:	bzip2-devel
+BuildRequires:	pkgconfig(libpcre)
+BuildRequires:	openldap-devel
+BuildRequires:	attr-devel
+BuildRequires:	pkgconfig(libxml-2.0)
+BuildRequires:	pkgconfig(sqlite3)
+Requires(pre):	webserver-base
+Requires:       webserver-base
+Requires(post):  rpm-helper
+Requires(preun): rpm-helper
+Obsoletes:	%name-modules
+Provides:	%name-modules
 Provides:	webserver
 
 %description
 Security, speed, compliance, and flexibility--all of these describe LightTPD
-which is rapidly redefining efficiency of a web-server; as it is designed and
+which is rapidly redefining efficiency of a webserver; as it is designed and
 optimized for high performance environments. With a small memory
 footprint compared to other web-servers, effective management of the
 cpu-load, and advanced feature set (FastCGI, CGI, Auth,
@@ -67,8 +71,8 @@ for digest auth:
  - htdigest
 
 %package mod_cml
-Summary:        CML (Cache Meta Language) module for %{name}
-Group:          System/Servers
+Summary:	CML (Cache Meta Language) module for %{name}
+Group:		System/Servers
 Requires:	%{name}
 
 %description mod_cml
@@ -77,8 +81,8 @@ of a page at one side and building a page from its fragments on the other side
 using LUA.
 
 %package mod_compress
-Summary:        Output Compression module for %{name}
-Group:          System/Servers
+Summary:	Output Compression module for %{name}
+Group:		System/Servers
 Requires:	%{name}
 
 %description mod_compress
@@ -89,8 +93,8 @@ is used to negotiate the most suitable compression method.
 We support deflate, gzip and bzip2.
 
 %package mod_mysql_vhost
-Summary:        MySQL-based vhosting module for %{name}
-Group:          System/Servers
+Summary:	MySQL-based vhosting module for %{name}
+Group:		System/Servers
 Requires:	%{name}
 
 %description mod_mysql_vhost
@@ -98,8 +102,8 @@ With MySQL-based vhosting you can store the path to a given
 host's document root in a MySQL database.
 
 %package mod_trigger_b4_dl
-Summary:        Trigger before Download module for %{name}
-Group:          System/Servers
+Summary:	Trigger before Download module for %{name}
+Group:		System/Servers
 Requires:	%{name}
 
 %description mod_trigger_b4_dl
@@ -115,8 +119,8 @@ The trigger information is either stored locally in a gdbm file or
 remotely in memcached.
 
 %package mod_webdav
-Summary:        WebDAV module for %{name}
-Group:          System/Servers
+Summary:	WebDAV module for %{name}
+Group:		System/Servers
 Requires:	%{name}
 
 %description mod_webdav
@@ -142,6 +146,7 @@ For time-consuming or blocking scripts use mod_fastcgi and friends.
 
 %prep
 %setup -q
+%patch1 -p0
 
 %build
 %configure2_5x --libdir=%{_libdir}/%{name}/ \
@@ -153,7 +158,6 @@ For time-consuming or blocking scripts use mod_fastcgi and friends.
   --with-bzip2\
   --with-fam\
   --with-webdav-props\
-  --with-webdav-locks\
   --with-gdbm\
   --with-memcache\
   --with-lua
@@ -163,23 +167,34 @@ For time-consuming or blocking scripts use mod_fastcgi and friends.
 %install
 %makeinstall_std
 
-mkdir -p %{buildroot}%{_sysconfdir}/{init.d,sysconfig}
-install -m 755 %{SOURCE1} %{buildroot}%{_sysconfdir}/init.d/lighttpd
-install -m 644 doc/initscripts/sysconfig.lighttpd %{buildroot}%{_sysconfdir}/sysconfig/lighttpd
+install -d -m 755 %{buildroot}%{_sysconfdir}/sysconfig
+install -m 644 doc/initscripts/sysconfig.lighttpd \
+    %{buildroot}%{_sysconfdir}/sysconfig/lighttpd
 
-mkdir -p %{buildroot}%{_sysconfdir}/lighttpd
-install -m 644 doc/config/lighttpd.conf %{buildroot}%{_sysconfdir}/lighttpd
+install -d -m 755 %{buildroot}%{_unitdir}
+install -m 644 %{SOURCE2} %{buildroot}%{_unitdir}
 
-sed -i 's£^server.document-root.*$£server.document-root = "%{_var}/www/html"£' %{buildroot}%{_sysconfdir}/lighttpd/lighttpd.conf
-sed -i 's£^server.errorlog.*$£server.errorlog = "%{_logdir}/lighttpd/error.log"£' %{buildroot}%{_sysconfdir}/lighttpd/lighttpd.conf
-sed -i 's£^accesslog.filename.*$£accesslog.filename = "%{_logdir}/lighttpd/access.log"£' %{buildroot}%{_sysconfdir}/lighttpd/lighttpd.conf
+install -d -m 755 %{buildroot}%{_sysconfdir}/php.d
+install -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/php.d/lighttpd.ini
 
-sed -i 's£.*server.username[\t ]*= .*$£server.username = "apache"£' %{buildroot}%{_sysconfdir}/lighttpd/lighttpd.conf
-sed -i 's£.*server.groupname[\t ]*= .*$£server.groupname = "apache"£' %{buildroot}%{_sysconfdir}/lighttpd/lighttpd.conf
+install -d -m 755 %{buildroot}%{_sysconfdir}/lighttpd
+install -d -m 755 %{buildroot}%{_sysconfdir}/lighttpd/conf.d
+install -m 644 doc/config/*.conf %{buildroot}%{_sysconfdir}/lighttpd
+install -m 644 doc/config/conf.d/*.conf %{buildroot}%{_sysconfdir}/lighttpd/conf.d
+
+perl -pi \
+    -e 's!.*server.username[\t ]*= .*$!server.username = "apache"!;' \
+    -e 's!.*server.groupname[\t ]*= .*$!server.groupname = "apache"!;' \
+    -e 's!^server.document-root.*$!server.document-root = "%{_var}/www/html"!;' \
+    -e 's!^server.errorlog.*$!server.errorlog = "%{_logdir}/lighttpd/error.log"!;' \
+    %{buildroot}%{_sysconfdir}/lighttpd/lighttpd.conf
+
+perl -pi \
+    -e 's!^accesslog.filename.*$!accesslog.filename = "%{_logdir}/lighttpd/access.log"!' \
+    %{buildroot}%{_sysconfdir}/lighttpd/conf.d/access_log.conf
+
 
 mkdir -p %{buildroot}%{_logdir}/lighttpd
-
-mkdir -p %{buildroot}%{_var}/www/html
 
 mkdir -p %{buildroot}%{_sysconfdir}/logrotate.d
 cat > %{buildroot}%{_sysconfdir}/logrotate.d/%{name} <<EOF
@@ -203,7 +218,7 @@ do
 	mod=`cat "$i" | tr -d '\\r' | sed -n "s/^Module:.*\\(mod_.*\\)$/\\1/p"`
 	if [ -z "$mod" ]
 	then
-		echo "%doc $i" >> base.list
+		echo  "%doc $i" >> base.list
 	else
 		if echo "%{base_modules}" | grep "$mod" > /dev/null
 		then
@@ -213,8 +228,6 @@ do
 		fi
 	fi
 done
-
-mkdir -p %buildroot%{_var}/www/html
 
 %post
 # Fix rights on logs after upgrade, else the server can not start
@@ -226,23 +239,19 @@ if [ $1 -gt 1 ]; then
 	fi
 fi
 
-%_post_service lighttpd
-
-%preun
-%_preun_service lighttpd
-
 %files -f base.list
-%doc doc/config/lighttpd.conf README NEWS COPYING AUTHORS
-%attr(0755,root,root) %{_sysconfdir}/init.d/lighttpd
-%config(noreplace) %attr(0644,root,root) %{_sysconfdir}/sysconfig/lighttpd
+%doc doc/config/lighttpd.conf README INSTALL NEWS COPYING AUTHORS
+%{_unitdir}/lighttpd.service
+%config(noreplace) %{_sysconfdir}/sysconfig/lighttpd
 %dir %{_sysconfdir}/lighttpd/
-%config(noreplace) %{_sysconfdir}/lighttpd/*
+%dir %{_sysconfdir}/lighttpd/conf.d/
+%config(noreplace) %{_sysconfdir}/lighttpd/*.conf
+%config(noreplace) %{_sysconfdir}/lighttpd/conf.d/*.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
+%config(noreplace) %{_sysconfdir}/php.d/lighttpd.ini
 %attr(0755,apache,apache) %{_logdir}/lighttpd
 %{_mandir}/*/*
 %{_sbindir}/*
-%attr(0755,apache,apache) %dir %{_var}/www
-%attr(0755,root,root) %dir %{_var}/www/html
 
 %files mod_auth -f mod_auth
 %{_libdir}/%{name}/mod_auth.so
