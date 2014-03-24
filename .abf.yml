@@ -1,4 +1,5 @@
----
+removed_sources:
+  lighttpd-1.4.32.tar.xz: 50dfcdc3f4827c16507fc6457fae1fd3661fdeb4
 sources:
-  lighttpd-1.4.31.tar.bz2: fadfd4bd25d794536ea646fa376caee6a105368e
-  lighttpd-1.4.32.tar.bz2: 61930d88aa5a5ebb4a4b539099e9577694e61185
+  lighttpd-1.4.35.tar.xz: 7ab2b2900f614a5422c1ef183c0e19b3e3620f1b
+  lighttpd-1.4.35.tar.xz.asc: 708c8e42ca75292181a9488e4a2fa71c102b5321

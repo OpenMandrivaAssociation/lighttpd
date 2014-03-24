@@ -3,13 +3,14 @@
 %define base_modules	mod_access.so,mod_accesslog.so,mod_alias.so,mod_cgi.so,mod_dirlisting.so,mod_evhost.so,mod_expire.so,mod_extforward.so,mod_fastcgi.so,mod_flv_streaming.so,mod_indexfile.so,mod_proxy.so,mod_redirect.so,mod_rewrite.so,mod_rrdtool.so,mod_scgi.so,mod_secdownload.so,mod_setenv.so,mod_simple_vhost.so,mod_ssi.so,mod_staticfile.so,mod_status.so,mod_userdir.so,mod_usertrack.so,mod_evasive.so
 
 Name:		lighttpd
-Version:	1.4.32
+Version:	1.4.35
 Release:	1
 Summary:	A fast webserver with minimal memory-footprint
 License:	BSD
 Group:		System/Servers
 URL:		http://lighttpd.net/
-Source0:	http://download.lighttpd.net/lighttpd/releases-1.4.x/%{name}-%{version}.tar.bz2
+Source0:	http://download.lighttpd.net/lighttpd/releases-1.4.x/%{name}-%{version}.tar.xz
+Source1:	http://download.lighttpd.net/lighttpd/releases-1.4.x/%{name}-%{version}.tar.xz.asc
 Source2:	lighttpd.service
 Source3:	php.d-lighttpd.ini
 Patch1:		lighttpd-defaultroot.patch
@@ -17,7 +18,7 @@ BuildRequires:	pkgconfig(zlib)
 BuildRequires:	fam-devel
 BuildRequires:	mysql-devel
 BuildRequires:	memcache-devel
-BuildRequires:	lua5.1-devel
+BuildRequires:	lua-devel
 BuildRequires:	pkgconfig(openssl)
 BuildRequires:	gdbm-devel
 BuildRequires:	bzip2-devel
@@ -30,13 +31,13 @@ Requires(pre):	webserver-base
 Requires:       webserver-base
 Requires(post):  rpm-helper
 Requires(preun): rpm-helper
-Obsoletes:	%name-modules
-Provides:	%name-modules
+Obsoletes:	%{name}-modules < %{EVRD}
+Provides:	%{name}-modules = %{EVRD}
 Provides:	webserver
 
 %description
 Security, speed, compliance, and flexibility--all of these describe LightTPD
-which is rapidly redefining efficiency of a webserver; as it is designed and
+which is rapidly redefining efficiency of a web server; as it is designed and
 optimized for high performance environments. With a small memory
 footprint compared to other web-servers, effective management of the
 cpu-load, and advanced feature set (FastCGI, CGI, Auth,
@@ -146,7 +147,7 @@ For time-consuming or blocking scripts use mod_fastcgi and friends.
 
 %prep
 %setup -q
-%patch1 -p0
+# %patch1 -p0
 
 %build
 %configure2_5x --libdir=%{_libdir}/%{name}/ \
@@ -158,6 +159,7 @@ For time-consuming or blocking scripts use mod_fastcgi and friends.
   --with-bzip2\
   --with-fam\
   --with-webdav-props\
+  --with-webdav-locks\
   --with-gdbm\
   --with-memcache\
   --with-lua
@@ -167,36 +169,34 @@ For time-consuming or blocking scripts use mod_fastcgi and friends.
 %install
 %makeinstall_std
 
-install -d -m 755 %{buildroot}%{_sysconfdir}/sysconfig
-install -m 644 doc/initscripts/sysconfig.lighttpd \
+install -Dm 644 doc/initscripts/sysconfig.lighttpd \
     %{buildroot}%{_sysconfdir}/sysconfig/lighttpd
 
-install -d -m 755 %{buildroot}%{_unitdir}
-install -m 644 %{SOURCE2} %{buildroot}%{_unitdir}
+install -Dm 644 %{SOURCE2} %{buildroot}%{_unitdir}/%{name}.service
 
-install -d -m 755 %{buildroot}%{_sysconfdir}/php.d
-install -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/php.d/lighttpd.ini
+install -Dm 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/php.d/lighttpd.ini
 
 install -d -m 755 %{buildroot}%{_sysconfdir}/lighttpd
 install -d -m 755 %{buildroot}%{_sysconfdir}/lighttpd/conf.d
 install -m 644 doc/config/*.conf %{buildroot}%{_sysconfdir}/lighttpd
 install -m 644 doc/config/conf.d/*.conf %{buildroot}%{_sysconfdir}/lighttpd/conf.d
 
-perl -pi \
-    -e 's!.*server.username[\t ]*= .*$!server.username = "apache"!;' \
-    -e 's!.*server.groupname[\t ]*= .*$!server.groupname = "apache"!;' \
-    -e 's!^server.document-root.*$!server.document-root = "%{_var}/www/html"!;' \
-    -e 's!^server.errorlog.*$!server.errorlog = "%{_logdir}/lighttpd/error.log"!;' \
+install -d -m 755 %{buildroot}%{_logdir}/lighttpd
+
+sed -i \
+    -e 's!^server.username\s*=.*$!server.username = "apache"!;' \
+    -e 's!^server.groupname\s*=.*$!server.groupname = "apache"!;' \
+    -e 's!^var.server_root\s*=.*$!var.server_root = "%{_var}/www"!;' \
+    -e 's!^server.document-root\s*=.*$!server.document-root = "%{_var}/www/html"!;' \
+    -e 's!^server.errorlog\s*=.*$!server.errorlog = "%{_logdir}/lighttpd/error.log"!;' \
     %{buildroot}%{_sysconfdir}/lighttpd/lighttpd.conf
 
-perl -pi \
+sed -i \
     -e 's!^accesslog.filename.*$!accesslog.filename = "%{_logdir}/lighttpd/access.log"!' \
     %{buildroot}%{_sysconfdir}/lighttpd/conf.d/access_log.conf
 
 
-mkdir -p %{buildroot}%{_logdir}/lighttpd
-
-mkdir -p %{buildroot}%{_sysconfdir}/logrotate.d
+install -d -m 755 %{buildroot}%{_sysconfdir}/logrotate.d
 cat > %{buildroot}%{_sysconfdir}/logrotate.d/%{name} <<EOF
 %{_logdir}/%{name}/*.log {
     size=20M
@@ -209,8 +209,6 @@ cat > %{buildroot}%{_sysconfdir}/logrotate.d/%{name} <<EOF
     endscript
 }
 EOF
-
-rm -f %{buildroot}%{_libdir}/%{name}/*.la
 
 echo %{_libdir}/%{name}/{%{base_modules}} | tr ' ' '\n' > base.list
 for i in doc/outdated/*.txt
@@ -239,8 +237,13 @@ if [ $1 -gt 1 ]; then
 	fi
 fi
 
+%_post_unit %{name}
+
+%postun
+%_postun_unit %{name}
+
 %files -f base.list
-%doc doc/config/lighttpd.conf README INSTALL NEWS COPYING AUTHORS
+%doc doc/config/lighttpd.conf README NEWS COPYING AUTHORS
 %{_unitdir}/lighttpd.service
 %config(noreplace) %{_sysconfdir}/sysconfig/lighttpd
 %dir %{_sysconfdir}/lighttpd/
