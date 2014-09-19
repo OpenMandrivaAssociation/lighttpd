@@ -30,8 +30,8 @@ BuildRequires:	openldap-devel
 BuildRequires:	attr-devel
 BuildRequires:	pkgconfig(libxml-2.0)
 BuildRequires:	pkgconfig(sqlite3)
-Requires(pre):	webserver-base
-Requires:       webserver-base
+Requires(pre):	apache-base
+Requires:       apache-base
 Requires(post):  rpm-helper
 Requires(preun): rpm-helper
 Obsoletes:	%{name}-modules < %{EVRD}
@@ -190,8 +190,8 @@ install -d -m 755 %{buildroot}%{_logdir}/lighttpd
 sed -i \
     -e 's!^server.username\s*=.*$!server.username = "apache"!;' \
     -e 's!^server.groupname\s*=.*$!server.groupname = "apache"!;' \
-    -e 's!^var.server_root\s*=.*$!var.server_root = "%{_var}/www"!;' \
-    -e 's!^server.document-root\s*=.*$!server.document-root = "%{_var}/www/html"!;' \
+    -e 's!^var.server_root\s*=.*$!var.server_root = "/srv/www"!;' \
+    -e 's!^server.document-root\s*=.*$!server.document-root = "/srv/www/html"!;' \
     -e 's!^server.errorlog\s*=.*$!server.errorlog = "%{_logdir}/lighttpd/error.log"!;' \
     %{buildroot}%{_sysconfdir}/lighttpd/lighttpd.conf
 
