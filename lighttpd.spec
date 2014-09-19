@@ -1,3 +1,5 @@
+%define _disable_ld_no_undefined 1
+
 # Following modules bring no additionnal dependencies
 # Other ones go into separate packages
 %define base_modules	mod_access.so,mod_accesslog.so,mod_alias.so,mod_cgi.so,mod_dirlisting.so,mod_evhost.so,mod_expire.so,mod_extforward.so,mod_fastcgi.so,mod_flv_streaming.so,mod_indexfile.so,mod_proxy.so,mod_redirect.so,mod_rewrite.so,mod_rrdtool.so,mod_scgi.so,mod_secdownload.so,mod_setenv.so,mod_simple_vhost.so,mod_ssi.so,mod_staticfile.so,mod_status.so,mod_userdir.so,mod_usertrack.so,mod_evasive.so
@@ -14,6 +16,7 @@ Source1:	http://download.lighttpd.net/lighttpd/releases-1.4.x/%{name}-%{version}
 Source2:	lighttpd.service
 Source3:	php.d-lighttpd.ini
 Patch1:		lighttpd-defaultroot.patch
+Patch2:		lighttpd-1.4.35-lua5.2.patch
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	fam-devel
 BuildRequires:	mysql-devel
@@ -148,6 +151,7 @@ For time-consuming or blocking scripts use mod_fastcgi and friends.
 %prep
 %setup -q
 # %patch1 -p0
+%patch2 -p0
 
 %build
 %configure2_5x --libdir=%{_libdir}/%{name}/ \
