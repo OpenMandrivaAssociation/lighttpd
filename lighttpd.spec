@@ -6,7 +6,7 @@
 
 Name:		lighttpd
 Version:	1.4.35
-Release:	1
+Release:	2
 Summary:	A fast webserver with minimal memory-footprint
 License:	BSD
 Group:		System/Servers
