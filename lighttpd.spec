@@ -29,6 +29,7 @@ BuildRequires:	openldap-devel
 BuildRequires:	attr-devel
 BuildRequires:	pkgconfig(libxml-2.0)
 BuildRequires:	pkgconfig(sqlite3)
+BuildRequires:	pkgconfig(uuid)
 Requires(pre):	apache-base
 Requires:       apache-base
 Requires(post):  rpm-helper
