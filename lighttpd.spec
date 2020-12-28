@@ -150,10 +150,9 @@ For time-consuming or blocking scripts use mod_fastcgi and friends.
 
 %prep
 %setup -q
-# %patch1 -p0
 
 %build
-%configure2_5x --libdir=%{_libdir}/%{name}/ \
+%configure --libdir=%{_libdir}/%{name}/ \
   --with-mysql\
   --with-ldap\
   --with-attr\
@@ -167,13 +166,13 @@ For time-consuming or blocking scripts use mod_fastcgi and friends.
   --with-memcache\
   --with-lua
 
-%make
+%make_build
 
 %install
-%makeinstall_std
+%make_install
 
-install -Dm 644 doc/initscripts/sysconfig.lighttpd \
-    %{buildroot}%{_sysconfdir}/sysconfig/lighttpd
+#install -Dm 644 doc/initscripts/sysconfig.lighttpd \
+#    %{buildroot}%{_sysconfdir}/sysconfig/lighttpd
 
 install -Dm 644 %{SOURCE2} %{buildroot}%{_unitdir}/%{name}.service
 
