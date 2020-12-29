@@ -247,7 +247,7 @@ fi
 %files -f base.list
 %doc doc/config/lighttpd.conf README NEWS COPYING AUTHORS
 %{_unitdir}/lighttpd.service
-%config(noreplace) %{_sysconfdir}/sysconfig/lighttpd
+#config(noreplace) #{_sysconfdir}/sysconfig/lighttpd
 %dir %{_sysconfdir}/lighttpd/
 %dir %{_sysconfdir}/lighttpd/conf.d/
 %config(noreplace) %{_sysconfdir}/lighttpd/*.conf
