@@ -265,7 +265,7 @@ fi
 %{_libdir}/%{name}/mod_cml.so
 
 %files mod_compress -f mod_compress
-%{_libdir}/%{name}/mod_compress.so
+#{_libdir}/%{name}/mod_compress.so
 
 %files mod_mysql_vhost -f mod_mysql_vhost
 %{_libdir}/%{name}/mod_mysql_vhost.so
