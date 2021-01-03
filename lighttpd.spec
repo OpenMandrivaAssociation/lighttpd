@@ -257,6 +257,17 @@ fi
 %attr(0755,apache,apache) %{_logdir}/lighttpd
 %{_mandir}/*/*
 %{_sbindir}/*
+%{_libdir}/lighttpd/mod_authn_file.so
+%{_libdir}/lighttpd/mod_authn_ldap.so
+%{_libdir}/lighttpd/mod_authn_mysql.so
+%{_libdir}/lighttpd/mod_deflate.so
+%{_libdir}/lighttpd/mod_openssl.so
+%{_libdir}/lighttpd/mod_sockproxy.so
+%{_libdir}/lighttpd/mod_uploadprogress.so
+%{_libdir}/lighttpd/mod_vhostdb.so
+%{_libdir}/lighttpd/mod_vhostdb_ldap.so
+%{_libdir}/lighttpd/mod_vhostdb_mysql.so
+%{_libdir}/lighttpd/mod_wstunnel.so
 
 %files mod_auth -f mod_auth
 %{_libdir}/%{name}/mod_auth.so
