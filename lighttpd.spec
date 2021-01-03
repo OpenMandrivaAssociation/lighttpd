@@ -5,7 +5,7 @@
 %define base_modules	mod_access.so,mod_accesslog.so,mod_alias.so,mod_cgi.so,mod_dirlisting.so,mod_evhost.so,mod_expire.so,mod_extforward.so,mod_fastcgi.so,mod_flv_streaming.so,mod_indexfile.so,mod_proxy.so,mod_redirect.so,mod_rewrite.so,mod_rrdtool.so,mod_scgi.so,mod_secdownload.so,mod_setenv.so,mod_simple_vhost.so,mod_ssi.so,mod_staticfile.so,mod_status.so,mod_userdir.so,mod_usertrack.so,mod_evasive.so
 
 Name:		lighttpd
-Version:	1.4.40
+Version:	1.4.58
 Release:	1
 Summary:	A fast webserver with minimal memory-footprint
 License:	BSD
@@ -84,18 +84,6 @@ CML (Cache Meta Language) is a Meta language to describe the dependencies
 of a page at one side and building a page from its fragments on the other side
 using LUA.
 
-%package mod_compress
-Summary:	Output Compression module for %{name}
-Group:		System/Servers
-Requires:	%{name}
-
-%description mod_compress
-Output compression reduces the network load and can improve the
-overall throughput of the webserver. All major http-clients support
-compression by announcing it in the Accept-Encoding header. This
-is used to negotiate the most suitable compression method.
-We support deflate, gzip and bzip2.
-
 %package mod_mysql_vhost
 Summary:	MySQL-based vhosting module for %{name}
 Group:		System/Servers
@@ -150,10 +138,9 @@ For time-consuming or blocking scripts use mod_fastcgi and friends.
 
 %prep
 %setup -q
-# %patch1 -p0
 
 %build
-%configure2_5x --libdir=%{_libdir}/%{name}/ \
+%configure --libdir=%{_libdir}/%{name}/ \
   --with-mysql\
   --with-ldap\
   --with-attr\
@@ -167,13 +154,13 @@ For time-consuming or blocking scripts use mod_fastcgi and friends.
   --with-memcache\
   --with-lua
 
-%make
+%make_build
 
 %install
-%makeinstall_std
+%make_install
 
-install -Dm 644 doc/initscripts/sysconfig.lighttpd \
-    %{buildroot}%{_sysconfdir}/sysconfig/lighttpd
+#install -Dm 644 doc/initscripts/sysconfig.lighttpd \
+#    %{buildroot}%{_sysconfdir}/sysconfig/lighttpd
 
 install -Dm 644 %{SOURCE2} %{buildroot}%{_unitdir}/%{name}.service
 
@@ -248,7 +235,7 @@ fi
 %files -f base.list
 %doc doc/config/lighttpd.conf README NEWS COPYING AUTHORS
 %{_unitdir}/lighttpd.service
-%config(noreplace) %{_sysconfdir}/sysconfig/lighttpd
+#config(noreplace) #{_sysconfdir}/sysconfig/lighttpd
 %dir %{_sysconfdir}/lighttpd/
 %dir %{_sysconfdir}/lighttpd/conf.d/
 %config(noreplace) %{_sysconfdir}/lighttpd/*.conf
@@ -258,15 +245,23 @@ fi
 %attr(0755,apache,apache) %{_logdir}/lighttpd
 %{_mandir}/*/*
 %{_sbindir}/*
+%{_libdir}/lighttpd/mod_authn_file.so
+%{_libdir}/lighttpd/mod_authn_ldap.so
+%{_libdir}/lighttpd/mod_authn_mysql.so
+%{_libdir}/lighttpd/mod_deflate.so
+%{_libdir}/lighttpd/mod_openssl.so
+%{_libdir}/lighttpd/mod_sockproxy.so
+%{_libdir}/lighttpd/mod_uploadprogress.so
+%{_libdir}/lighttpd/mod_vhostdb.so
+%{_libdir}/lighttpd/mod_vhostdb_ldap.so
+%{_libdir}/lighttpd/mod_vhostdb_mysql.so
+%{_libdir}/lighttpd/mod_wstunnel.so
 
 %files mod_auth -f mod_auth
 %{_libdir}/%{name}/mod_auth.so
 
 %files mod_cml -f mod_cml
 %{_libdir}/%{name}/mod_cml.so
-
-%files mod_compress -f mod_compress
-%{_libdir}/%{name}/mod_compress.so
 
 %files mod_mysql_vhost -f mod_mysql_vhost
 %{_libdir}/%{name}/mod_mysql_vhost.so
