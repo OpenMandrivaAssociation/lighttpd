@@ -84,18 +84,6 @@ CML (Cache Meta Language) is a Meta language to describe the dependencies
 of a page at one side and building a page from its fragments on the other side
 using LUA.
 
-%package mod_compress
-Summary:	Output Compression module for %{name}
-Group:		System/Servers
-Requires:	%{name}
-
-%description mod_compress
-Output compression reduces the network load and can improve the
-overall throughput of the webserver. All major http-clients support
-compression by announcing it in the Accept-Encoding header. This
-is used to negotiate the most suitable compression method.
-We support deflate, gzip and bzip2.
-
 %package mod_mysql_vhost
 Summary:	MySQL-based vhosting module for %{name}
 Group:		System/Servers
@@ -274,9 +262,6 @@ fi
 
 %files mod_cml -f mod_cml
 %{_libdir}/%{name}/mod_cml.so
-
-%files mod_compress -f mod_compress
-#{_libdir}/%{name}/mod_compress.so
 
 %files mod_mysql_vhost -f mod_mysql_vhost
 %{_libdir}/%{name}/mod_mysql_vhost.so
