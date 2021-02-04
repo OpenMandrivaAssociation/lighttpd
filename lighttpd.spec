@@ -256,6 +256,7 @@ fi
 %{_libdir}/lighttpd/mod_vhostdb_ldap.so
 %{_libdir}/lighttpd/mod_vhostdb_mysql.so
 %{_libdir}/lighttpd/mod_wstunnel.so
+%{_libdir}/lighttpd/mod_ajp13.so
 
 %files mod_auth -f mod_auth
 %{_libdir}/%{name}/mod_auth.so
