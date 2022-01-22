@@ -74,15 +74,15 @@ for digest auth:
  - plain
  - htdigest
 
-%package mod_cml
-Summary:	CML (Cache Meta Language) module for %{name}
-Group:		System/Servers
-Requires:	%{name}
-
-%description mod_cml
-CML (Cache Meta Language) is a Meta language to describe the dependencies
-of a page at one side and building a page from its fragments on the other side
-using LUA.
+#package mod_cml
+#Summary:	CML (Cache Meta Language) module for %{name}
+#Group:		System/Servers
+#Requires:	%{name}
+#
+#description mod_cml
+#CML (Cache Meta Language) is a Meta language to describe the dependencies
+#of a page at one side and building a page from its fragments on the other side
+#using LUA.
 
 %package mod_mysql_vhost
 Summary:	MySQL-based vhosting module for %{name}
@@ -260,8 +260,8 @@ fi
 %files mod_auth -f mod_auth
 %{_libdir}/%{name}/mod_auth.so
 
-%files mod_cml -f mod_cml
-%{_libdir}/%{name}/mod_cml.so
+#files mod_cml -f mod_cml
+#{_libdir}/%{name}/mod_cml.so
 
 %files mod_mysql_vhost -f mod_mysql_vhost
 %{_libdir}/%{name}/mod_mysql_vhost.so
