@@ -264,7 +264,7 @@ fi
 #{_libdir}/%{name}/mod_cml.so
 
 %files mod_mysql_vhost
-%{_libdir}/%{name}/mod_mysql_vhost.so
+#{_libdir}/%{name}/mod_mysql_vhost.so
 
 %files mod_trigger_b4_dl -f mod_trigger_b4_dl
 %{_libdir}/%{name}/mod_trigger_b4_dl.so
