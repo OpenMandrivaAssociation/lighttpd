@@ -263,7 +263,7 @@ fi
 #files mod_cml -f mod_cml
 #{_libdir}/%{name}/mod_cml.so
 
-%files mod_mysql_vhost -f mod_mysql_vhost
+%files mod_mysql_vhost
 %{_libdir}/%{name}/mod_mysql_vhost.so
 
 %files mod_trigger_b4_dl -f mod_trigger_b4_dl
