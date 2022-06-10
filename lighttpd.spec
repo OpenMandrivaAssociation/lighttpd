@@ -84,32 +84,6 @@ for digest auth:
 #of a page at one side and building a page from its fragments on the other side
 #using LUA.
 
-%package mod_mysql_vhost
-Summary:	MySQL-based vhosting module for %{name}
-Group:		System/Servers
-Requires:	%{name}
-
-%description mod_mysql_vhost
-With MySQL-based vhosting you can store the path to a given
-host's document root in a MySQL database.
-
-%package mod_trigger_b4_dl
-Summary:	Trigger before Download module for %{name}
-Group:		System/Servers
-Requires:	%{name}
-
-%description mod_trigger_b4_dl
-Anti Hotlinking:
- - if user requests ''download-url'' directly, the request is denied
-   and he is redirected to ''deny-url'
- - if user visits ''trigger-url'' before requesting ''download-url'',
-    access is granted
- - if user visits ''download-url'' again after ''trigger-timeout'' has
-   elapsed, the request is denied and he is redirected to ''deny-url''
-
-The trigger information is either stored locally in a gdbm file or
-remotely in memcached.
-
 %package mod_webdav
 Summary:	WebDAV module for %{name}
 Group:		System/Servers
@@ -263,14 +237,8 @@ fi
 #files mod_cml -f mod_cml
 #{_libdir}/%{name}/mod_cml.so
 
-%files mod_mysql_vhost
-#{_libdir}/%{name}/mod_mysql_vhost.so
-
-%files mod_trigger_b4_dl
-#{_libdir}/%{name}/mod_trigger_b4_dl.so
-
 %files mod_webdav
-#{_libdir}/%{name}/mod_webdav.so
+%{_libdir}/%{name}/mod_webdav.so
 
 %files mod_magnet
-#{_libdir}/%{name}/mod_magnet.so
+%{_libdir}/%{name}/mod_magnet.so
