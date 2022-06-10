@@ -266,11 +266,11 @@ fi
 %files mod_mysql_vhost
 #{_libdir}/%{name}/mod_mysql_vhost.so
 
-%files mod_trigger_b4_dl -f mod_trigger_b4_dl
-%{_libdir}/%{name}/mod_trigger_b4_dl.so
+%files mod_trigger_b4_dl
+#{_libdir}/%{name}/mod_trigger_b4_dl.so
 
-%files mod_webdav -f mod_webdav
-%{_libdir}/%{name}/mod_webdav.so
+%files mod_webdav
+#{_libdir}/%{name}/mod_webdav.so
 
-%files mod_magnet -f mod_magnet
-%{_libdir}/%{name}/mod_magnet.so
+%files mod_magnet
+#{_libdir}/%{name}/mod_magnet.so
