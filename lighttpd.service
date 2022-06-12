@@ -3,10 +3,12 @@ Description=Lightning Fast Webserver With Light System Requirements
 After=syslog.target network.target
 
 [Service]
-Type=forking
+Type=simple
 PIDFile=/var/run/lighttpd.pid
 EnvironmentFile=-/etc/sysconfig/lighttpd
-ExecStart=/usr/sbin/lighttpd -f /etc/lighttpd/lighttpd.conf
+ExecStartPre=/usr/sbin/lighttpd -tt -f /etc/lighttpd/lighttpd.conf
+ExecStart=/usr/sbin/lighttpd -D -f /etc/lighttpd/lighttpd.conf
+ExecReload=/bin/kill -USR1 $MAINPID
 
 [Install]
 WantedBy=multi-user.target

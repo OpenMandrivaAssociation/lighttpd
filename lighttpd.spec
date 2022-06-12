@@ -6,7 +6,7 @@
 
 Name:		lighttpd
 Version:	1.4.65
-Release:	1
+Release:	2
 Summary:	A fast webserver with minimal memory-footprint
 License:	BSD
 Group:		System/Servers
@@ -17,14 +17,10 @@ Source2:	lighttpd.service
 Source3:	php.d-lighttpd.ini
 Patch1:		lighttpd-defaultroot.patch
 BuildRequires:	pkgconfig(zlib)
-BuildRequires:	fam-devel
 BuildRequires:	mysql-devel
-BuildRequires:	memcache-devel
 BuildRequires:	lua-devel
 BuildRequires:	pkgconfig(openssl)
-BuildRequires:	gdbm-devel
-BuildRequires:	bzip2-devel
-BuildRequires:	pkgconfig(libpcre)
+BuildRequires:	pkgconfig(pcre2)
 BuildRequires:	openldap-devel
 BuildRequires:	attr-devel
 BuildRequires:	pkgconfig(libxml-2.0)
@@ -39,13 +35,12 @@ Provides:	%{name}-modules = %{EVRD}
 Provides:	webserver
 
 %description
-Security, speed, compliance, and flexibility--all of these describe LightTPD
-which is rapidly redefining efficiency of a web server; as it is designed and
-optimized for high performance environments. With a small memory
-footprint compared to other web-servers, effective management of the
-cpu-load, and advanced feature set (FastCGI, CGI, Auth,
-Output-Compression, URL-Rewriting and many more) LightTPD is the
-perfect solution for every server that is suffering load problems.
+lighttpd (pronounced /lighty/) is a secure, fast, compliant, and very flexible
+web server that has been optimized for high-performance environments. lighttpd
+uses memory and CPU efficiently and has lower resource use than other popular
+web servers. Its advanced feature-set (FastCGI, CGI, Auth, Output-Compression,
+URL-Rewriting and much more) make lighttpd the perfect web server for all
+systems, small and large.
 
 This packages contains the server and base modules :
 %(for mod in $(echo %base_modules | tr ',' '\n'); do echo ${mod%%.so}; done)
@@ -56,7 +51,7 @@ Group:		System/Servers
 Requires:	%{name}
 
 %description mod_auth
-lighttpd supportes both authentication method described by RFC 2617:
+lighttpd supports authentication methods described by RFC 7616 and RFC 7617:
 
  - basic
  - digest
@@ -74,24 +69,13 @@ for digest auth:
  - plain
  - htdigest
 
-#package mod_cml
-#Summary:	CML (Cache Meta Language) module for %{name}
-#Group:		System/Servers
-#Requires:	%{name}
-#
-#description mod_cml
-#CML (Cache Meta Language) is a Meta language to describe the dependencies
-#of a page at one side and building a page from its fragments on the other side
-#using LUA.
-
 %package mod_webdav
 Summary:	WebDAV module for %{name}
 Group:		System/Servers
 Requires:	%{name}
 
 %description mod_webdav
-The WebDAV module for %{name} is a very minimalistic implementation of RFC
-2518.
+The WebDAV module for %{name} implementing RFC 4918.
 
 %package mod_magnet
 Summary:	Module to control the request handling in %{name}
@@ -101,10 +85,10 @@ Requires:	%{name}
 %description mod_magnet
 mod_magnet can attract a request in several stages in the request-handling.
 
-* either at the same level as mod_rewrite, before any parsing of the URL is
-  done
-* or at a later stage, when the doc-root is known and the physical-path is
+* at the same level as mod_rewrite, before any parsing of the URL is done
+* at a later stage, when the doc-root is known and the physical-path is
   already setup
+* at response start, right before response headers are finalized
 
 Keep in mind that the magnet is executed in the core of lighty. EVERY long-
 running operation is blocking ALL connections in the server. You are warned.
@@ -119,13 +103,9 @@ For time-consuming or blocking scripts use mod_fastcgi and friends.
   --with-ldap\
   --with-attr\
   --with-openssl\
-  --with-pcre\
-  --with-bzip2\
-  --with-fam\
+  --with-pcre2\
   --with-webdav-props\
   --with-webdav-locks\
-  --with-gdbm\
-  --with-memcache\
   --with-lua
 
 %make_build
@@ -233,9 +213,6 @@ fi
 
 %files mod_auth -f mod_auth
 %{_libdir}/%{name}/mod_auth.so
-
-#files mod_cml -f mod_cml
-#{_libdir}/%{name}/mod_cml.so
 
 %files mod_webdav
 %{_libdir}/%{name}/mod_webdav.so
