@@ -6,7 +6,7 @@
 
 Name:		lighttpd
 Version:	1.4.65
-Release:	1
+Release:	2
 Summary:	A fast webserver with minimal memory-footprint
 License:	BSD
 Group:		System/Servers
@@ -20,7 +20,7 @@ BuildRequires:	pkgconfig(zlib)
 BuildRequires:	mysql-devel
 BuildRequires:	lua-devel
 BuildRequires:	pkgconfig(openssl)
-BuildRequires:	pkgconfig(libpcre)
+BuildRequires:	pkgconfig(pcre2)
 BuildRequires:	openldap-devel
 BuildRequires:	attr-devel
 BuildRequires:	pkgconfig(libxml-2.0)
@@ -103,7 +103,7 @@ For time-consuming or blocking scripts use mod_fastcgi and friends.
   --with-ldap\
   --with-attr\
   --with-openssl\
-  --with-pcre\
+  --with-pcre2\
   --with-webdav-props\
   --with-webdav-locks\
   --with-lua
