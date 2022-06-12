@@ -17,13 +17,9 @@ Source2:	lighttpd.service
 Source3:	php.d-lighttpd.ini
 Patch1:		lighttpd-defaultroot.patch
 BuildRequires:	pkgconfig(zlib)
-BuildRequires:	fam-devel
 BuildRequires:	mysql-devel
-BuildRequires:	memcache-devel
 BuildRequires:	lua-devel
 BuildRequires:	pkgconfig(openssl)
-BuildRequires:	gdbm-devel
-BuildRequires:	bzip2-devel
 BuildRequires:	pkgconfig(libpcre)
 BuildRequires:	openldap-devel
 BuildRequires:	attr-devel
@@ -108,12 +104,8 @@ For time-consuming or blocking scripts use mod_fastcgi and friends.
   --with-attr\
   --with-openssl\
   --with-pcre\
-  --with-bzip2\
-  --with-fam\
   --with-webdav-props\
   --with-webdav-locks\
-  --with-gdbm\
-  --with-memcache\
   --with-lua
 
 %make_build
