@@ -20,7 +20,7 @@ BuildRequires:	pkgconfig(zlib)
 BuildRequires:	mysql-devel
 BuildRequires:	lua-devel
 BuildRequires:	pkgconfig(openssl)
-BuildRequires:	pkgconfig(pcre2)
+BuildRequires:	pkgconfig(libpcre2-posix)
 BuildRequires:	openldap-devel
 BuildRequires:	attr-devel
 BuildRequires:	pkgconfig(libxml-2.0)
