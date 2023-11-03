@@ -202,9 +202,9 @@ fi
 %{_libdir}/lighttpd/mod_authn_file.so
 %{_libdir}/lighttpd/mod_authn_ldap.so
 %{_libdir}/lighttpd/mod_deflate.so
+%{_libdir}/lighttpd/mod_h2.so
 %{_libdir}/lighttpd/mod_openssl.so
 %{_libdir}/lighttpd/mod_sockproxy.so
-#{_libdir}/lighttpd/mod_uploadprogress.so
 %{_libdir}/lighttpd/mod_vhostdb.so
 %{_libdir}/lighttpd/mod_vhostdb_ldap.so
 %{_libdir}/lighttpd/mod_vhostdb_mysql.so
