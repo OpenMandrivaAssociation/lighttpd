@@ -2,10 +2,10 @@
 
 # Following modules bring no additionnal dependencies
 # Other ones go into separate packages
-%define base_modules	mod_access.so,mod_accesslog.so,mod_alias.so,mod_cgi.so,mod_dirlisting.so,mod_evhost.so,mod_expire.so,mod_extforward.so,mod_fastcgi.so,mod_indexfile.so,mod_proxy.so,mod_redirect.so,mod_rewrite.so,mod_rrdtool.so,mod_scgi.so,mod_secdownload.so,mod_setenv.so,mod_simple_vhost.so,mod_ssi.so,mod_staticfile.so,mod_status.so,mod_userdir.so,mod_usertrack.so,mod_evasive.so
+%define base_modules	mod_accesslog.so,mod_cgi.so,mod_dirlisting.so,mod_extforward.so,mod_proxy.so,mod_rrdtool.so,mod_ssi.so,mod_status.so,mod_userdir.so
 
 Name:		lighttpd
-Version:	1.4.70
+Version:	1.4.73
 Release:	1
 Summary:	A fast webserver with minimal memory-footprint
 License:	BSD
@@ -21,7 +21,7 @@ BuildRequires:	mysql-devel
 BuildRequires:	lua-devel
 BuildRequires:	pkgconfig(openssl)
 BuildRequires:	pkgconfig(libpcre2-posix)
-BuildRequires:	openldap-devel
+BuildRequires:	pkgconfig(ldap)
 BuildRequires:	attr-devel
 BuildRequires:	pkgconfig(libxml-2.0)
 BuildRequires:	pkgconfig(sqlite3)
@@ -202,9 +202,9 @@ fi
 %{_libdir}/lighttpd/mod_authn_file.so
 %{_libdir}/lighttpd/mod_authn_ldap.so
 %{_libdir}/lighttpd/mod_deflate.so
+%{_libdir}/lighttpd/mod_h2.so
 %{_libdir}/lighttpd/mod_openssl.so
 %{_libdir}/lighttpd/mod_sockproxy.so
-%{_libdir}/lighttpd/mod_uploadprogress.so
 %{_libdir}/lighttpd/mod_vhostdb.so
 %{_libdir}/lighttpd/mod_vhostdb_ldap.so
 %{_libdir}/lighttpd/mod_vhostdb_mysql.so
