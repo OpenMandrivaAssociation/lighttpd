@@ -5,7 +5,7 @@
 %define base_modules	mod_accesslog.so,mod_cgi.so,mod_dirlisting.so,mod_extforward.so,mod_proxy.so,mod_rrdtool.so,mod_ssi.so,mod_status.so,mod_userdir.so
 
 Name:		lighttpd
-Version:	1.4.73
+Version:	1.4.74
 Release:	1
 Summary:	A fast webserver with minimal memory-footprint
 License:	BSD
