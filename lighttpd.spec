@@ -26,9 +26,8 @@ BuildRequires:	attr-devel
 BuildRequires:	pkgconfig(libxml-2.0)
 BuildRequires:	pkgconfig(sqlite3)
 BuildRequires:	pkgconfig(uuid)
-Requires(pre):	apache-base
-Requires:       apache-base
 Requires(post):  rpm-helper
+Requires(post):	user(www)
 Requires(preun): rpm-helper
 Obsoletes:	%{name}-modules < %{EVRD}
 Provides:	%{name}-modules = %{EVRD}
@@ -174,17 +173,12 @@ done
 %post
 # Fix rights on logs after upgrade, else the server can not start
 if [ $1 -gt 1 ]; then
-	if grep '^server.username = "apache"' %{_sysconfdir}/lighttpd/lighttpd.conf >/dev/null; then
-		if [ `stat -c %U /var/log/lighttpd/` != "apache" ]; then
-			chown -R apache /var/log/lighttpd/
+	if grep '^server.username = "www"' %{_sysconfdir}/lighttpd/lighttpd.conf >/dev/null; then
+		if [ `stat -c %U /var/log/lighttpd/` != "www" ]; then
+			chown -R www /var/log/lighttpd/
 		fi
 	fi
 fi
-
-%_post_unit %{name}
-
-%postun
-%_postun_unit %{name}
 
 %files -f base.list
 %doc doc/config/lighttpd.conf README NEWS COPYING AUTHORS
@@ -196,7 +190,7 @@ fi
 %config(noreplace) %{_sysconfdir}/lighttpd/conf.d/*.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %config(noreplace) %{_sysconfdir}/php.d/lighttpd.ini
-%attr(0755,apache,apache) %{_logdir}/lighttpd
+%attr(0755,www,www) %{_logdir}/lighttpd
 %{_mandir}/*/*
 %{_sbindir}/*
 %{_libdir}/lighttpd/mod_authn_file.so
