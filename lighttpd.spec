@@ -10,7 +10,7 @@ Release:	1
 Summary:	A fast webserver with minimal memory-footprint
 License:	BSD
 Group:		System/Servers
-URL:		http://lighttpd.net/
+URL:		https://lighttpd.net/
 Source0:	http://download.lighttpd.net/lighttpd/releases-1.4.x/%{name}-%{version}.tar.xz
 Source1:	http://download.lighttpd.net/lighttpd/releases-1.4.x/%{name}-%{version}.tar.xz.asc
 Source2:	lighttpd.service
