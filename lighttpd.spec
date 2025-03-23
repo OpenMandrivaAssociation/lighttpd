@@ -5,7 +5,7 @@
 %define base_modules	mod_accesslog.so,mod_cgi.so,mod_dirlisting.so,mod_extforward.so,mod_proxy.so,mod_rrdtool.so,mod_ssi.so,mod_status.so,mod_userdir.so
 
 Name:		lighttpd
-Version:	1.4.74
+Version:	1.4.78
 Release:	1
 Summary:	A fast webserver with minimal memory-footprint
 License:	BSD
@@ -16,19 +16,14 @@ Source1:	http://download.lighttpd.net/lighttpd/releases-1.4.x/%{name}-%{version}
 Source2:	lighttpd.service
 Source3:	php.d-lighttpd.ini
 Patch1:		lighttpd-defaultroot.patch
-BuildRequires:	pkgconfig(zlib)
-BuildRequires:	mysql-devel
-BuildRequires:	lua-devel
-BuildRequires:	pkgconfig(openssl)
 BuildRequires:	pkgconfig(libpcre2-posix)
-BuildRequires:	pkgconfig(ldap)
 BuildRequires:	attr-devel
-BuildRequires:	pkgconfig(libxml-2.0)
-BuildRequires:	pkgconfig(sqlite3)
-BuildRequires:	pkgconfig(uuid)
 Requires(post):  rpm-helper
 Requires(post):	user(www)
 Requires(preun): rpm-helper
+# preserve installation of modules historically bundled with lighttpd package
+Requires(post): %{name}-mod_deflate
+Requires(post): %{name}-mod_openssl
 Obsoletes:	%{name}-modules < %{EVRD}
 Provides:	%{name}-modules = %{EVRD}
 Provides:	webserver
@@ -45,9 +40,11 @@ This packages contains the server and base modules :
 %(for mod in $(echo %base_modules | tr ',' '\n'); do echo ${mod%%.so}; done)
 
 %package mod_auth
-Summary:	Authentification module for %{name}
+Summary:	Authentication module for %{name}
 Group:		System/Servers
 Requires:	%{name}
+# preserve installation of modules historically bundled with lighttpd mod_auth
+Requires(post): %{name}-mod_authn_ldap
 
 %description mod_auth
 lighttpd supports authentication methods described by RFC 7616 and RFC 7617:
@@ -68,10 +65,29 @@ for digest auth:
  - plain
  - htdigest
 
+%package mod_authn_ldap
+Summary:	Authentication module for lighttpd that uses LDAP
+Requires:	%{name}
+BuildRequires:	pkgconfig(ldap)
+
+%description mod_authn_ldap
+Authentication module for lighttpd that uses LDAP.
+
+%package mod_deflate
+Summary:	Compression module for %{name}
+Group:		System/Servers
+Requires:	%{name}
+BuildRequires:	pkgconfig(zlib)
+
+%description mod_deflate
+Compression module for lighttpd.
+
 %package mod_webdav
 Summary:	WebDAV module for %{name}
 Group:		System/Servers
 Requires:	%{name}
+BuildRequires:	pkgconfig(libxml-2.0)
+BuildRequires:	pkgconfig(sqlite3)
 
 %description mod_webdav
 The WebDAV module for %{name} implementing RFC 4918.
@@ -80,6 +96,7 @@ The WebDAV module for %{name} implementing RFC 4918.
 Summary:	Module to control the request handling in %{name}
 Group:		System/Servers
 Requires:	%{name}
+BuildRequires:	lua-devel
 
 %description mod_magnet
 mod_magnet can attract a request in several stages in the request-handling.
@@ -92,6 +109,30 @@ mod_magnet can attract a request in several stages in the request-handling.
 Keep in mind that the magnet is executed in the core of lighty. EVERY long-
 running operation is blocking ALL connections in the server. You are warned.
 For time-consuming or blocking scripts use mod_fastcgi and friends.
+
+%package mod_openssl
+Summary:	TLS module for lighttpd that uses OpenSSL
+Requires:	%{name}
+BuildRequires:	pkgconfig(openssl)
+
+%description mod_openssl
+TLS module for lighttpd that uses OpenSSL.
+
+%package mod_vhostdb_ldap
+Summary:	Virtual host module for lighttpd that uses LDAP
+Requires:	%{name}
+BuildRequires:	pkgconfig(ldap)
+
+%description mod_vhostdb_ldap
+Virtual host module for lighttpd that uses LDAP.
+
+%package mod_vhostdb_mysql
+Summary:	Virtual host module for lighttpd that uses MySQL
+Requires:	%{name}
+BuildRequires:	mysql-devel
+
+%description mod_vhostdb_mysql
+Virtual host module for lighttpd that uses MySQL.
 
 %prep
 %setup -q
@@ -132,7 +173,7 @@ sed -i \
     -e 's!^var.server_root\s*=.*$!var.server_root = "/srv/www"!;' \
     -e 's!^server.document-root\s*=.*$!server.document-root = "/srv/www/html"!;' \
     -e 's!^server.errorlog\s*=.*$!server.errorlog = "%{_logdir}/lighttpd/error.log"!;' \
-    %{buildroot}%{_sysconfdir}/lighttpd/lighttpd.conf
+    %{buildroot}%{_sysconfdir}/lighttpd/lighttpd.annotated.conf
 
 sed -i \
     -e 's!^accesslog.filename.*$!accesslog.filename = "%{_logdir}/lighttpd/access.log"!' \
@@ -173,7 +214,7 @@ done
 %post
 # Fix rights on logs after upgrade, else the server can not start
 if [ $1 -gt 1 ]; then
-	if grep '^server.username = "www"' %{_sysconfdir}/lighttpd/lighttpd.conf >/dev/null; then
+	if grep '^server.username = "www"' %{_sysconfdir}/lighttpd/lighttpd.annotated.conf >/dev/null; then
 		if [ `stat -c %U /var/log/lighttpd/` != "www" ]; then
 			chown -R www /var/log/lighttpd/
 		fi
@@ -182,10 +223,14 @@ fi
 
 %files -f base.list
 %doc doc/config/lighttpd.conf README NEWS COPYING AUTHORS
+%doc doc/scripts/cert-staple.sh
 %{_unitdir}/lighttpd.service
 #config(noreplace) #{_sysconfdir}/sysconfig/lighttpd
 %dir %{_sysconfdir}/lighttpd/
 %dir %{_sysconfdir}/lighttpd/conf.d/
+%exclude %{_sysconfdir}/lighttpd/conf.d/deflate.conf
+%exclude %{_sysconfdir}/lighttpd/conf.d/magnet.conf
+%exclude %{_sysconfdir}/lighttpd/conf.d/webdav.conf
 %config(noreplace) %{_sysconfdir}/lighttpd/*.conf
 %config(noreplace) %{_sysconfdir}/lighttpd/conf.d/*.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
@@ -193,23 +238,50 @@ fi
 %attr(0755,www,www) %{_logdir}/lighttpd
 %{_mandir}/*/*
 %{_sbindir}/*
-%{_libdir}/lighttpd/mod_authn_file.so
-%{_libdir}/lighttpd/mod_authn_ldap.so
-%{_libdir}/lighttpd/mod_deflate.so
-%{_libdir}/lighttpd/mod_h2.so
-%{_libdir}/lighttpd/mod_openssl.so
-%{_libdir}/lighttpd/mod_sockproxy.so
-%{_libdir}/lighttpd/mod_vhostdb.so
-%{_libdir}/lighttpd/mod_vhostdb_ldap.so
-%{_libdir}/lighttpd/mod_vhostdb_mysql.so
-%{_libdir}/lighttpd/mod_wstunnel.so
-%{_libdir}/lighttpd/mod_ajp13.so
+%{_libdir}/lighttpd/*.so
+%exclude %{_libdir}/lighttpd/mod_auth.so
+%exclude %{_libdir}/lighttpd/mod_authn_file.so
+#%exclude %{_libdir}/lighttpd/mod_authn_dbi.so
+#%exclude %{_libdir}/lighttpd/mod_authn_gssapi.so
+%exclude %{_libdir}/lighttpd/mod_authn_ldap.so
+#%exclude %{_libdir}/lighttpd/mod_authn_pam.so
+#%exclude %{_libdir}/lighttpd/mod_authn_sasl.so
+%exclude %{_libdir}/lighttpd/mod_deflate.so
+#%exclude %{_libdir}/lighttpd/mod_gnutls.so
+%exclude %{_libdir}/lighttpd/mod_magnet.so
+#%exclude %{_libdir}/lighttpd/mod_maxminddb.so
+#%exclude %{_libdir}/lighttpd/mod_mbedtls.so
+%exclude %{_libdir}/lighttpd/mod_openssl.so
+#%exclude %{_libdir}/lighttpd/mod_nss.so
+#%exclude %{_libdir}/lighttpd/mod_vhostdb_dbi.so
+%exclude %{_libdir}/lighttpd/mod_vhostdb_ldap.so
+%exclude %{_libdir}/lighttpd/mod_vhostdb_mysql.so
+#%exclude %{_libdir}/lighttpd/mod_vhostdb_pgsql.so
 
 %files mod_auth -f mod_auth
 %{_libdir}/%{name}/mod_auth.so
+%{_libdir}/lighttpd/mod_authn_file.so
+
+%files mod_authn_ldap
+%{_libdir}/lighttpd/mod_authn_ldap.so
+
+%files mod_deflate
+%config(noreplace) %{_sysconfdir}/lighttpd/conf.d/deflate.conf
+%{_libdir}/lighttpd/mod_deflate.so
 
 %files mod_webdav
+%config(noreplace) %{_sysconfdir}/lighttpd/conf.d/webdav.conf
 %{_libdir}/%{name}/mod_webdav.so
 
 %files mod_magnet
+%config(noreplace) %{_sysconfdir}/lighttpd/conf.d/magnet.conf
 %{_libdir}/%{name}/mod_magnet.so
+
+%files mod_openssl
+%{_libdir}/lighttpd/mod_openssl.so
+
+%files mod_vhostdb_ldap
+%{_libdir}/lighttpd/mod_vhostdb_ldap.so
+
+%files mod_vhostdb_mysql
+%{_libdir}/lighttpd/mod_vhostdb_mysql.so
