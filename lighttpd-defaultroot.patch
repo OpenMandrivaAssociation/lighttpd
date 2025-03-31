@@ -1,11 +1,11 @@
---- doc/config/lighttpd.conf.defaultroot	2011-12-02 09:31:24.196527335 +0800
-+++ doc/config/lighttpd.conf	2011-12-02 09:31:31.196529178 +0800
+--- doc/config/lighttpd.annotated.conf.defaultroot	2011-12-02 09:31:24.196527335 +0800
++++ doc/config/lighttpd.annotated.conf	2011-12-02 09:31:31.196529178 +0800
 @@ -14,7 +14,7 @@
- ## chroot example aswell.
+ ## chroot example as well.
  ##
  var.log_root    = "/var/log/lighttpd"
 -var.server_root = "/srv/www"
 +var.server_root = "/var/www"
- var.state_dir   = "/var/run"
+ var.state_dir   = "/run"
  var.home_dir    = "/var/lib/lighttpd"
  var.conf_dir    = "/etc/lighttpd"
