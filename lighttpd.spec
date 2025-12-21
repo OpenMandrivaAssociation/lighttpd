@@ -16,6 +16,11 @@ Source1:	http://download.lighttpd.net/lighttpd/releases-1.4.x/%{name}-%{version}
 Source2:	lighttpd.service
 Source3:	php.d-lighttpd.ini
 Patch1:		lighttpd-defaultroot.patch
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires:	pkgconfig(libpcre2-posix)
 BuildRequires:	attr-devel
 Requires(post):  rpm-helper
