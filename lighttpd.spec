@@ -143,8 +143,9 @@ Virtual host module for lighttpd that uses MySQL.
 %setup -q
 
 %build
-# 1.4.85 ships configure.ac without config.h.in. %configure reruns automake,
-# which stops on "required file 'config.h.in' not found".
+# 1.4.85 ships configure.ac without config.h.in. The configure macro reruns
+# automake, which stops when that file is missing, so generate it first.
+# A percent-configure in this comment would expand into the build script.
 aclocal -Im4 -Iscripts/m4
 autoheader
 %configure --libdir=%{_libdir}/%{name}/ \
