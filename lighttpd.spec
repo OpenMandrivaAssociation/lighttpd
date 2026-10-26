@@ -204,7 +204,8 @@ cat > %{buildroot}%{_sysconfdir}/logrotate.d/%{name} <<EOF
 }
 EOF
 
-echo %{_libdir}/%{name}/{%{base_modules}} | tr ' ' '\n' > base.list
+# The base modules are already picked up by the *.so glob below.
+: > base.list
 for i in doc/outdated/*.txt
 do
 	mod=`cat "$i" | tr -d '\\r' | sed -n "s/^Module:.*\\(mod_.*\\)$/\\1/p"`
